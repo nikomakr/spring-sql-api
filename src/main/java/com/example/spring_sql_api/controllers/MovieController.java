@@ -5,6 +5,8 @@ import com.example.spring_sql_api.models.Movie;
 import com.example.spring_sql_api.services.MovieService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/movies")
 public class MovieController {
@@ -19,12 +21,19 @@ public class MovieController {
         return movieService.findMovieById(id);
     }
 
-//    @GetMapping
-
+    @GetMapping
+    public List<Movie> getAllMovies() {
+        return movieService.getAllMovies();
+    }
 
     @PostMapping
     public Movie createMovie(@RequestBody CreateMovieRequest newMovie) {
         return movieService.createMovie(newMovie);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteMovie(@PathVariable Long id) {
+        movieService.deleteMovie(id);
     }
 
 }

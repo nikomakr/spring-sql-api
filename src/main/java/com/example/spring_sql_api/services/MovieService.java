@@ -6,6 +6,8 @@ import com.example.spring_sql_api.repositories.MovieRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MovieService {
     private final MovieRepository movieRepo;
@@ -30,6 +32,15 @@ public class MovieService {
         )));
     }
 
+    public List<Movie> getAllMovies() {
+        return movieRepo.findAll();
+    }
 
+    public void deleteMovie(Long id) {
+        if (!movieRepo.existsById(id)) {
+            throw new EntityNotFoundException(String.format("Movie with ID: %d, was not found", id));
+        }
+        movieRepo.deleteById(id);
+    }
 
 }
