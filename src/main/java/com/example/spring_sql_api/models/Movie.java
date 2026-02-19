@@ -11,13 +11,33 @@ public class Movie {
     private Long id;
     private String title;
     private int releaseYear;
+    private String director;
+    private String language;
+
 
     // One Movie -> Many Ratings
     @OneToMany(mappedBy = "movie")
     private List<Rating> ratings;
 
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public String getDirector() {
+        return director;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
     }
 
     public void setId(Long id) {
