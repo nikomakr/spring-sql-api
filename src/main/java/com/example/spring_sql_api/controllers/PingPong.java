@@ -1,15 +1,9 @@
-package com.example.spring_sql_api;
+package com.example.spring_sql_api.controllers;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-//RESTful API
-// GET /api/customers -> Returns all customers in DB
-// GET /api/customers/:id -> Return Customer with ID (id)
-
-// POST /api/customers -> Create a new customer
 
 @RestController
 public class PingPong {

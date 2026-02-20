@@ -5,7 +5,6 @@ import com.example.spring_sql_api.DTOs.UserResponse;
 import com.example.spring_sql_api.models.User;
 import com.example.spring_sql_api.repositories.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -24,14 +23,6 @@ public class UserService {
 
     // CREATE ON POST Request
     public UserResponse addUser(CreateUserRequest newUserRequest) {
-
-//        // Validation
-//        // Name should be not empty - Email should be not empty
-//        // Email should not already be in use ->
-//        if (!StringUtils.hasText(user.getName()) || !StringUtils.hasText(user.getEmail())) {
-//            System.err.println(user);
-//            throw new IllegalArgumentException("Name & Email are required");
-//        }
 
         if (userRepo.existsByEmail(newUserRequest.getEmail())) {
             throw new IllegalArgumentException("Email already in use: " + newUserRequest.getEmail());

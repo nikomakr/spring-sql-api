@@ -9,7 +9,7 @@ public class CreateMovieRequest {
             "Name must be between 3 and 100 char long")
     private String title;
 
-    @NotBlank(message = "Release Year is required")
+    @Positive(message = "Release Year must be a positive number")
     private int releaseYear;
 
     private String director;
@@ -18,11 +18,23 @@ public class CreateMovieRequest {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public int getReleaseYear() {
         return releaseYear;
     }
 
+    public void setReleaseYear(int releaseYear) {
+        this.releaseYear = releaseYear;
+    }
+
     public String getDirector() {
         return director;
+    }
+
+    public void setDirector(String director) {
+        this.director = director;
     }
 }
