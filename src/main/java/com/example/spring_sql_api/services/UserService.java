@@ -1,12 +1,18 @@
 package com.example.spring_sql_api.services;
 
 import com.example.spring_sql_api.DTOs.CreateUserRequest;
+import com.example.spring_sql_api.DTOs.RatingResponse;
+import com.example.spring_sql_api.DTOs.UpdateUserRequest;
 import com.example.spring_sql_api.DTOs.UserResponse;
+import com.example.spring_sql_api.models.Rating;
 import com.example.spring_sql_api.models.User;
 import com.example.spring_sql_api.repositories.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -16,9 +22,8 @@ public class UserService {
         this.userRepo = userRepo;
     }
 
-    //READ on GET request
-    public List<User> findAllUsers() {
-        return userRepo.findAll();
+    public List<UserResponse> findAllUsers() {
+        return userRepo.findAll().stream().map(this::mapToResponse).toList();
     }
 
     // CREATE ON POST Request
@@ -37,9 +42,66 @@ public class UserService {
         return mapToResponse(saved);
     }
 
+    public UserResponse updateUser(Long id, UpdateUserRequest request) {
+        if (request.getEmail() == null && request.getName() == null) {
+            throw new IllegalArgumentException("Either email or name need to " +
+                    "be updated");
+        }
+
+        User user =
+                userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException(String.format("User with ID: %d was not found", id)));
+        if (!(request.getName() == null) && !request.getName().isBlank()) {
+            user.setName(request.getName());
+        }
+        if (!(request.getEmail() == null) && !request.getEmail().isBlank()) {
+            user.setEmail(request.getEmail());
+        }
+        User updated = userRepo.save(user);
+        return mapToResponse(updated);
+    }
+
+    public User findUserById(Long id) {
+        return userRepo.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(String.format(
+                        "User with ID: %d, was not found", id
+                )));
+    }
+
+    // READ with ratings - returns DTO with ratings
+    public UserResponse findUserByIdWithRatings(Long id) {
+        User user = userRepo.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(String.format(
+                        "User with ID: %d, was not found", id)));
+        return mapToResponseWithRatings(user);
+    }
+
+    // DELETE
+    public void deleteUser(Long id) {
+        if (!userRepo.existsById(id)) {
+            throw new EntityNotFoundException(String.format(
+                    "User with ID: %d, was not found", id));
+        }
+        userRepo.deleteById(id);
+    }
+
     private UserResponse mapToResponse(User user) {
         return new UserResponse(user.getId(), user.getName(), user.getEmail());
     }
 
+    // Map User to UserResponse with ratings
+    private UserResponse mapToResponseWithRatings(User user) {
+        List<RatingResponse> ratings = user.getRatings() != null
+                ? user.getRatings().stream()
+                .map(this::mapRatingToResponse)
+                .collect(Collectors.toList())
+                : Collections.emptyList();
+        return new UserResponse(user.getId(), user.getName(), user.getEmail(), ratings);
+    }
 
+    // Map Rating to RatingResponse
+    private RatingResponse mapRatingToResponse(Rating rating) {
+        Long movieId = rating.getMovie() != null ? rating.getMovie().getId() : null;
+        String movieTitle = rating.getMovie() != null ? rating.getMovie().getTitle() : null;
+        return new RatingResponse(rating.getId(), rating.getScore(), movieId, movieTitle);
+    }
 }

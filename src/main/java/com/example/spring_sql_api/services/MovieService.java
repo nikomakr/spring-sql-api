@@ -22,6 +22,7 @@ public class MovieService {
         movie.setTitle(newMovie.getTitle());
         movie.setReleaseYear(newMovie.getReleaseYear());
         movie.setDirector(newMovie.getDirector());
+        movie.setLanguage(newMovie.getLanguage());
         return movieRepo.save(movie);
     }
 

@@ -12,7 +12,13 @@ public class CreateMovieRequest {
     @Positive(message = "Release Year must be a positive number")
     private int releaseYear;
 
+    @Size(max = 100, message =
+            "Director's name must be 100 char max")
     private String director;
+
+    @Size(max = 100, message =
+            "Movie language must be 100 char max")
+    private String language;
 
     public String getTitle() {
         return title;
@@ -36,5 +42,13 @@ public class CreateMovieRequest {
 
     public void setDirector(String director) {
         this.director = director;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 }
